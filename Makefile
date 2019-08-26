@@ -10,7 +10,6 @@ GOBASE := $(shell pwd)
 GOPATH := $(GOBASE)/vendor:$(GOBASE)
 GOBIN := $(GOBASE)/bin
 GOBUILDDIR := $(GOBASE)/cmd/nuntius
-# GOFILES := $(wildcard *.go)
 # Use linker flags to provide version/build settings
 LDFLAGS=-ldflags "-X=main.version=$(VERSION) -X=main.gitHash=$(HASH) -X main.build=$(BUILD)"
 
@@ -19,9 +18,6 @@ STDERR := /tmp/.$(PROJECTNAME)-stderr.txt
 
 # Make is verbose in Linux. Make it silent.
 MAKEFLAGS += --silent
-
-# install: Install missing dependencies. Runs `go get` internally. e.g; make install get=github.com/foo/bar
-# install: go-install
 
 ## compile: Compile the binary.
 compile:
@@ -37,17 +33,13 @@ clean:
 
 go-compile: go-get go-build
 
+go-get:
+	@echo "  >  Checking if there is any missing dependencies..."
+	@GOPATH=$(GOPATH) GOBIN=$(GOBIN) go get $(get)
+
 go-build:
 	@echo "  >  Building binary..."
 	@GOPATH=$(GOPATH) GOBIN=$(GOBIN) GO111MODULE=on go build $(LDFLAGS) -o $(GOBIN)/$(PROJECTNAME) $(GOBUILDDIR)
-
-# go-generate:
-#	@echo "  >  Generating dependency files..."
-#	@GOPATH=$(GOPATH) GOBIN=$(GOBIN) go generate $(generate)
-
-# go-get:
-#	@echo "  >  Checking if there is any missing dependencies..."
-#	@GOPATH=$(GOPATH) GOBIN=$(GOBIN) go get $(get)
 
 go-clean:
 	@echo "  >  Cleaning build cache"
