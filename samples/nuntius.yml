@@ -1,0 +1,16 @@
+---
+providers:
+  telegram:
+    # @BotFather, then create a robot and get its token
+    token: "593692790:AAGVdh0oVibSRJQPvyaAvYELrATFxbnOCAE"
+
+templates:
+- /etc/nuntius/notifications.tmpl
+
+receivers:
+  - name: 'telegram'
+    provider: telegram
+    text: '{{ template "telegram_message" . }}'
+    to:
+      # @userinfobot, then send a message @<YourUserName> to userinfobot to get the UserID
+      - '<UserID>'
