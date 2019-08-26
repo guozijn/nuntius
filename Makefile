@@ -39,7 +39,7 @@ go-compile: go-get go-build
 
 go-build:
 	@echo "  >  Building binary..."
-	@GOPATH=$(GOPATH) GOBIN=$(GOBIN) go build $(LDFLAGS) -o $(GOBIN)/$(PROJECTNAME) $(GOBUILDDIR)
+	@GOPATH=$(GOPATH) GOBIN=$(GOBIN) GO111MODULE=on go build $(LDFLAGS) -o $(GOBIN)/$(PROJECTNAME) $(GOBUILDDIR)
 
 # go-generate:
 #	@echo "  >  Generating dependency files..."
