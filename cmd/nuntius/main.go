@@ -12,6 +12,7 @@ import (
 
 	"github.com/guozijn/nuntius"
 	"github.com/guozijn/nuntius/provider/telegram"
+	"github.com/guozijn/nuntius/provider/dingtalk"
 	"github.com/prometheus/alertmanager/template"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 )
@@ -25,7 +26,7 @@ var (
 		"config",
 		"nuntius.yml",
 		"Nuntius configuration file path.")
-	printVn = flag.Bool("v", false, "Print current build and version tags.")
+	printVn = flag.Bool("v", false, "Show application version.")
 	build   string
 	gitHash string
 	version string
@@ -155,6 +156,8 @@ func providerByName(name string) (nuntius.Provider, error) {
 	switch name {
 	case "telegram":
 		return telegram.NewTelegram(providerConfig.Providers.Telegram)
+	case "dingtalk":
+		return dingtalk.NewDingTalk(providerConfig.Providers.DingTalk), nil
 	}
 
 	return nil, fmt.Errorf("%s: Unknown provider", name)

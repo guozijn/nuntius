@@ -2,7 +2,15 @@
 providers:
   telegram:
     # @BotFather, then create a robot and get its token
-    token: "593692790:AAGVdh0oVibSRJQPvyaAvYELrATFxbnOCAE"
+    token: "593692791:AAGVdh0oVibSRJQPvyaAvYELrATFxbnOCAF"
+  dingtalk:
+    # Robot access token
+    token: "62150a3275e0e8398a07a311695bdaeb5500c8b9810fdfafb6d813a590136c4f"
+    msgtype: "text"
+    # The phone number of the person you want @
+    atmobiles:
+      - "13666666666"
+    isatall:
 
 templates:
 - /etc/nuntius/notifications.tmpl
@@ -10,7 +18,11 @@ templates:
 receivers:
   - name: 'telegram'
     provider: telegram
-    text: '{{ template "telegram_message" . }}'
+    text: '{{ template "common_message" . }}'
     to:
       # @userinfobot, then send a message @<YourUserName> to userinfobot to get the UserID
       - '<UserID>'
+
+  - name: 'dingtalk'
+    provider: dingtalk
+    text: '{{ template "common_message" . }}'

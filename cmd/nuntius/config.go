@@ -3,6 +3,7 @@ package main
 import (
 	"io/ioutil"
 	"github.com/guozijn/nuntius/provider/telegram"
+	"github.com/guozijn/nuntius/provider/dingtalk"
 	"github.com/prometheus/alertmanager/template"
 	"gopkg.in/yaml.v2"
 )
@@ -18,6 +19,7 @@ type ReceiverConf struct {
 var providerConfig struct {
 	Providers struct {
 		Telegram    telegram.TelegramConfig
+		DingTalk	dingtalk.Config
 	}
 
 	Receivers []ReceiverConf
