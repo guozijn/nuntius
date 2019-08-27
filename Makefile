@@ -26,6 +26,10 @@ compile:
 	@-$(MAKE) -s go-compile 2> $(STDERR)
 	@cat $(STDERR) | sed -e '1s/.*/\nStdout:\n/'  | sed 's/make\[.*/ /' | sed "/^/s/^/     /" 1>&2
 
+## tarball: Make a tarball.
+tarball:
+	@tar -C bin/ -zcvf bin/nuntius-$(VERSION).linux-amd64.tar.gz nuntius
+
 ## clean: Clean build files. Runs `go clean` internally.
 clean:
 	@-rm $(GOBIN)/$(PROJECTNAME) 2> /dev/null
