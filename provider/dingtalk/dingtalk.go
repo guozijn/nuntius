@@ -6,18 +6,18 @@ import (
 	"fmt"
 	"net/http"
 	"time"
-	
+
 	"github.com/guozijn/nuntius"
 )
 
 var dingtalkHTTPClient = &http.Client{Timeout: time.Second * 20}
 
 type Config struct {
-	Token string `yaml:"token"`
-	URL   string `yaml:"url"`
-	MsgType string `yaml:"msgtype"`
+	Token     string   `yaml:"token"`
+	URL       string   `yaml:"url"`
+	MsgType   string   `yaml:"msgtype"`
 	AtMobiles []string `yaml:"atmobiles"`
-	IsAtAll bool `yaml:"isatall"`
+	IsAtAll   bool     `yaml:"isatall"`
 }
 
 type DingTalk struct {
@@ -26,7 +26,7 @@ type DingTalk struct {
 
 type DingTalkPayload struct {
 	Msgtype string `json:"msgtype"`
-	Text struct {
+	Text    struct {
 		Content string `json:"content"`
 	} `json:"text"`
 	At struct {
@@ -58,7 +58,7 @@ func (c *DingTalk) Send(message nuntius.Message) error {
 		return err
 	}
 
-	request, err := http.NewRequest("POST", c.URL + "?access_token=" + c.Token, bytes.NewBuffer(data))
+	request, err := http.NewRequest("POST", c.URL+"?access_token="+c.Token, bytes.NewBuffer(data))
 	if err != nil {
 		return err
 	}

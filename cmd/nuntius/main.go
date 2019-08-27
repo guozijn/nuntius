@@ -11,8 +11,8 @@ import (
 	"strings"
 
 	"github.com/guozijn/nuntius"
-	"github.com/guozijn/nuntius/provider/telegram"
 	"github.com/guozijn/nuntius/provider/dingtalk"
+	"github.com/guozijn/nuntius/provider/telegram"
 	"github.com/prometheus/alertmanager/template"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 )
