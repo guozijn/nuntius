@@ -1,3 +1,3 @@
 # nuntius
 
-A generic alertmanager alert webhook interface.
+A generic alertmanager webhook interface.
