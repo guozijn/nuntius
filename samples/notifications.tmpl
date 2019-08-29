@@ -12,3 +12,16 @@
 
 {{ define "common_text" }}{{ template "common_title" .}}
 {{ template "common_message" . }}{{ end }}
+
+{{ define "dingtalk_markdown_message" }}
+{{ if gt (len .Alerts.Firing) 0 }}
+# Alerts Firing:
+{{ range .Alerts.Firing }}> - {{ .Labels.instance }}: {{ .Annotations.description }}
+{{ end }}{{ end }}
+{{ if gt (len .Alerts.Resolved) 0 }}
+# Alerts Resolved:
+{{ range .Alerts.Resolved }}> - {{ .Labels.instance }}: {{ .Annotations.description }}
+{{ end }}{{ end }}{{ end }}
+
+{{ define "dingtalk_markdown_text" }}{{ template "dingtalk_markdown_title" .}}
+{{ template "dingtalk_markdown_message" . }}{{ end }}

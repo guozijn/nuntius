@@ -1,11 +1,12 @@
 package main
 
 import (
+	"io/ioutil"
+
 	"github.com/guozijn/nuntius/provider/dingtalk"
 	"github.com/guozijn/nuntius/provider/telegram"
 	"github.com/prometheus/alertmanager/template"
 	"gopkg.in/yaml.v2"
-	"io/ioutil"
 )
 
 type ReceiverConf struct {

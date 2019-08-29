@@ -16,6 +16,7 @@ type Config struct {
 	Token     string   `yaml:"token"`
 	URL       string   `yaml:"url"`
 	MsgType   string   `yaml:"msgtype"`
+	Title     string   `yaml:"title"`
 	AtMobiles []string `yaml:"atmobiles"`
 	IsAtAll   bool     `yaml:"isatall"`
 }
@@ -29,6 +30,10 @@ type DingTalkPayload struct {
 	Text    struct {
 		Content string `json:"content"`
 	} `json:"text"`
+	Markdown    struct {
+		Title string `json:"title"`
+		Text string `json:"text"`
+	} `json:"markdown"`
 	At struct {
 		AtMobiles []string `json:"atMobiles"`
 		IsAtAll   bool     `json:"isAtAll"`
@@ -50,6 +55,8 @@ func (c *DingTalk) Send(message nuntius.Message) error {
 	payload := &DingTalkPayload{}
 	payload.Msgtype = c.MsgType
 	payload.Text.Content = message.Text
+	payload.Markdown.Title = c.Title
+	payload.Markdown.Text = message.Text
 	payload.At.AtMobiles = c.AtMobiles
 	payload.At.IsAtAll = c.IsAtAll
 

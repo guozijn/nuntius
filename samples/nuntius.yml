@@ -6,8 +6,10 @@ providers:
   dingtalk:
     # Robot access token
     token: "62150a3275e0e8398a07a311695bdaeb5500c8b9810fdfafb6d813a590136c4f"
-    msgtype: "text"
+    # Valid options: ['markdown', 'text']
+    msgtype: "markdown"
     # The phone number of the person you want @
+    title: "告警信息"
     atmobiles:
       - "13666666666"
     isatall:
@@ -25,4 +27,4 @@ receivers:
 
   - name: 'dingtalk'
     provider: dingtalk
-    text: '{{ template "common_message" . }}'
+    text: '{{ template "dingtalk_markdown_message" . }}'
