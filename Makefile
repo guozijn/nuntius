@@ -7,47 +7,61 @@ PROJECTNAME := $(shell basename "$(PWD)")
 
 # Go related variables.
 GOBASE := $(shell pwd)
-GOPATH := $(GOBASE)/vendor:$(GOBASE)
+GOPATH := $(firstword $(subst :, ,$(shell go env GOPATH)))
 GOBIN := $(GOBASE)/bin
 GOBUILDDIR := $(GOBASE)/cmd/nuntius
+GO111MODULE := on
 # Use linker flags to provide version/build settings
-LDFLAGS=-ldflags "-X=main.version=$(VERSION) -X=main.gitHash=$(HASH) -X main.build=$(BUILD)"
+LDFLAGS := -ldflags "-X=main.version=$(VERSION) -X=main.gitHash=$(HASH) -X main.build=$(BUILD)"
+GOPACKAGES := ./...
 
-# Redirect error output to a file, so we can show it in development mode.
-STDERR := /tmp/.$(PROJECTNAME)-stderr.txt
+env:
+	@echo VERSION $(VERSION)
+	@echo HASH $(HASH)
+	@echo BUILD $(BUILD)
 
-# Make is verbose in Linux. Make it silent.
-MAKEFLAGS += --silent
+## test: Run tests.
+test: go-test
 
-## compile: Compile the binary.
-compile:
-	@-touch $(STDERR)
-	@-rm $(STDERR)
-	@-$(MAKE) -s go-compile 2> $(STDERR)
-	@cat $(STDERR) | sed -e '1s/.*/\nStdout:\n/'  | sed 's/make\[.*/ /' | sed "/^/s/^/     /" 1>&2
+## fmt: Run go fmt.
+fmt: go-fmt
+
+## deps: Get dependencies.
+deps: go-deps
+
+## build: Build the binary.
+build:
+	@-$(MAKE) -s go-deps go-build
 
 ## tarball: Make a tarball.
 tarball:
-	@tar -C bin/ -zcvf bin/nuntius-$(VERSION).linux-amd64.tar.gz nuntius
+	@tar -C $(GOBIN) -zcvf bin/nuntius-$(VERSION).linux-amd64.tar.gz nuntius
 
-## clean: Clean build files. Runs `go clean` internally.
-clean:
-	@-rm $(GOBIN)/$(PROJECTNAME) 2> /dev/null
-	@-$(MAKE) go-clean
-
-go-compile: go-get go-build
-
-go-get:
-	@echo "  >  Checking if there is any missing dependencies..."
-	@GOPATH=$(GOPATH) GOBIN=$(GOBIN) go get $(get)
+go-deps:
+	@echo ">> Getting dependencies"
+ifdef GO111MODULE
+	@GOPATH=$(GOPATH) GOBIN=$(GOBIN) GO111MODULE=$(GO111MODULE) go mod download
+else
+	@GOPATH=$(GOPATH) GOBIN=$(GOBIN) go get $(GOPACKAGES)
+endif
 
 go-build:
-	@echo "  >  Building binary..."
-	@GOPATH=$(GOPATH) GOBIN=$(GOBIN) GO111MODULE=on go build $(LDFLAGS) -o $(GOBIN)/$(PROJECTNAME) $(GOBUILDDIR)
+	@echo ">> Building binary"
+	@GOPATH=$(GOPATH) GOBIN=$(GOBIN) GO111MODULE=$(GO111MODULE) go build $(LDFLAGS) -o $(GOBIN)/$(PROJECTNAME) $(GOBUILDDIR)
 
-go-clean:
-	@echo "  >  Cleaning build cache"
-	@GOPATH=$(GOPATH) GOBIN=$(GOBIN) go clean
+go-fmt:
+	@echo ">> Checking code style"
+	@fmtRes=$$(gofmt -d $$(find . -path ./vendor -prune -o -name '*.go' -print)); \
+	if [ -n "$${fmtRes}" ]; then \
+		echo "gofmt checking failed!"; echo "$${fmtRes}"; echo; \
+		echo "Please ensure you are using $$(go version) for formatting code."; \
+		exit 1; \
+	fi
+
+.PHONY: go-test
+go-test:
+	@echo ">> Running all tests"
+	GOPATH=$(GOPATH) GOBIN=$(GOBIN) GO111MODULE=$(GO111MODULE) go test -v -cover $(GOOPTS) $(GOPACKAGES)
 
 .PHONY: help
 all: help
